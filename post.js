@@ -53,28 +53,27 @@ function renderPosts() {
   });
 
   // Tutorials
-  const tutContainer = document.getElementById("tutorials");
   posts.tutorials.forEach(post => {
     const pre = document.createElement("pre");
     const code = document.createElement("code");
     code.className = "language-sql";
-    code.innerText = post.code;
+    code.textContent = post.code; // giữ format, highlight ok
     pre.appendChild(code);
-
+  
     tutContainer.appendChild(makeCard(post.title, post.content, pre, post.code));
   });
-
+  
   // Tools
-  const toolContainer = document.getElementById("tools");
   posts.tools.forEach(post => {
     const pre = document.createElement("pre");
     const code = document.createElement("code");
     code.className = "language-python";
-    code.innerText = post.code; // giữ nguyên format
+    code.textContent = post.code; // <-- sửa innerText => textContent
     pre.appendChild(code);
-
+  
     toolContainer.appendChild(makeCard(post.title, post.content, pre, post.code, post.filename));
   });
+
 
   hljs.highlightAll();
 }
