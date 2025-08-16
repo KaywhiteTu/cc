@@ -1,30 +1,69 @@
-const posts = {
-  news: [
-    { title: "Cập nhật lỗ hổng mới CVE-2025-1234", content: "Mô tả về lỗ hổng mới và cách khai thác...", date: "2025-08-15" }
-  ],
-  tutorials: [
-    { title: "Hướng dẫn SQL Injection cơ bản", content: "SQLi là một trong những lỗ hổng phổ biến...", date: "2025-08-10" }
-  ],
-  tools: [
-    { title: "Tool BruteForce v1.0", content: "Công cụ brute force hỗ trợ SSH, FTP, RDP...", date: "2025-08-12" }
-  ]
-};
+document.addEventListener("DOMContentLoaded", function () {
+  const posts = {
+    team: `
+      <div style="text-align: center; padding: 20px;">
+        <h2 style="color:#f44336;">Giới thiệu Hacker Malware Team</h2>
+        <p style="max-width: 900px; margin: 0 auto; line-height: 1.6; color: #e0e0e0;">
+          Hacker Malware Team là một nhóm hacker hoạt động độc lập, chuyên nghiên cứu và phát triển tool, exploit 
+          và các kỹ thuật hack. Nhóm được thành lập với mục tiêu chia sẻ kiến thức, công cụ và kinh nghiệm để 
+          hỗ trợ cộng đồng hacker Việt Nam.
+        </p>
+      </div>
+    `,
+    news: `
+      <div style="text-align: center; padding: 20px;">
+        <h2 style="color:#f44336;">Tin tức mới nhất</h2>
+        <p style="max-width: 900px; margin: 0 auto; line-height: 1.6; color: #e0e0e0;">
+          Cập nhật tin tức an ninh mạng, các lỗ hổng bảo mật, và xu hướng hacking trên toàn thế giới.
+        </p>
+        <ul style="max-width: 800px; margin: 20px auto; text-align: left; color: #e0e0e0; line-height: 1.6;">
+          <li>[2025-08] Lỗ hổng zero-day mới được phát hiện trên Windows 11.</li>
+          <li>[2025-07] Hacker Malware Team ra mắt công cụ test bảo mật phiên bản 2.0.</li>
+          <li>[2025-06] Nhiều website chính phủ bị tấn công DDoS.</li>
+        </ul>
+      </div>
+    `,
+    tutorials: `
+      <div style="text-align: center; padding: 20px;">
+        <h2 style="color:#f44336;">Hướng dẫn & Tutorials</h2>
+        <p style="max-width: 900px; margin: 0 auto; line-height: 1.6; color: #e0e0e0;">
+          Chia sẻ kiến thức về bảo mật, khai thác lỗ hổng, viết tool, và kỹ thuật tấn công/phòng thủ trong thực tế.
+        </p>
+        <ul style="max-width: 800px; margin: 20px auto; text-align: left; color: #e0e0e0; line-height: 1.6;">
+          <li>Hướng dẫn cơ bản về SQL Injection (SQLi).</li>
+          <li>Cách sử dụng Burp Suite để kiểm tra bảo mật web.</li>
+          <li>Viết script Python để tự động hóa scanning.</li>
+        </ul>
+      </div>
+    `,
+    tools: `
+      <div style="text-align: center; padding: 20px;">
+        <h2 style="color:#f44336;">Tools & Công cụ</h2>
+        <p style="max-width: 900px; margin: 0 auto; line-height: 1.6; color: #e0e0e0;">
+          Các công cụ do Hacker Malware Team phát triển và chia sẻ, phục vụ cho việc nghiên cứu bảo mật và 
+          học tập hacking có trách nhiệm.
+        </p>
+        <ul style="max-width: 800px; margin: 20px auto; text-align: left; color: #e0e0e0; line-height: 1.6;">
+          <li><b>ReconTool</b> - Công cụ thu thập thông tin mục tiêu.</li>
+          <li><b>ExploitKit</b> - Framework thử nghiệm khai thác lỗ hổng.</li>
+          <li><b>AutoDDoS</b> - Công cụ mô phỏng tấn công từ chối dịch vụ (chỉ dùng cho lab).</li>
+        </ul>
+      </div>
+    `
+  };
 
-function renderPosts() {
-  for (let section in posts) {
-    let container = document.getElementById(section);
-    if (container) {
-      posts[section].forEach(p => {
-        container.innerHTML += `
-          <div class="card">
-            <h2>${p.title}</h2>
-            <p>${p.content}</p>
-            <div class="meta">📅 ${p.date}</div>
-          </div>
-        `;
-      });
-    }
+  function showTab(tab) {
+    document.getElementById("content").innerHTML = posts[tab];
   }
-}
 
-renderPosts();
+  // hiển thị mặc định
+  showTab("team");
+
+  // gán sự kiện click vào các nút
+  document.querySelectorAll(".tab-btn").forEach(btn => {
+    btn.addEventListener("click", function () {
+      const tab = this.getAttribute("data-tab");
+      showTab(tab);
+    });
+  });
+});
