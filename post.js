@@ -12,9 +12,7 @@ const posts = {
     {
       title: "SQL Injection cơ bản",
       content: "Hướng dẫn cách khai thác SQL Injection trên web app không an toàn.",
-      code: `# SQLi Test Payload
-' OR '1'='1
-' UNION SELECT null, username, password FROM users --`
+      code: "' OR '1'='1\n' UNION SELECT null, username, password FROM users --"
     }
   ],
 
@@ -22,7 +20,8 @@ const posts = {
     {
       title: "Port Scanner",
       content: "Tool scan port đơn giản với Python.",
-      code: `import socket
+      code:
+`import socket
 
 target = "127.0.0.1"
 for port in range(1,1000):
@@ -56,30 +55,61 @@ function renderPosts() {
   // Tutorials
   const tutContainer = document.getElementById("tutorials");
   posts.tutorials.forEach(post => {
-    tutContainer.innerHTML += `
-      <div class="card">
-        <h2>💻 ${post.title}</h2>
-        <p>${post.content}</p>
-        <pre><code class="language-python">${post.code}</code></pre>
-        <button class="btn copy-btn" onclick="copyCode(\`${post.code}\`)">📋 Copy</button>
-      </div>`;
+    const pre = document.createElement("pre");
+    const code = document.createElement("code");
+    code.className = "language-sql";
+    code.innerText = post.code;
+    pre.appendChild(code);
+
+    tutContainer.appendChild(makeCard(post.title, post.content, pre, post.code));
   });
 
   // Tools
   const toolContainer = document.getElementById("tools");
   posts.tools.forEach(post => {
-    toolContainer.innerHTML += `
-      <div class="card">
-        <h2>🛠 ${post.title}</h2>
-        <p>${post.content}</p>
-        <pre><code class="language-python">${post.code}</code></pre>
-        <button class="btn copy-btn" onclick="copyCode(\`${post.code}\`)">📋 Copy</button>
-        <button class="btn download-btn" onclick="downloadCode(\`${post.code}\`, '${post.filename}')">⬇ Download</button>
-      </div>`;
+    const pre = document.createElement("pre");
+    const code = document.createElement("code");
+    code.className = "language-python";
+    code.innerText = post.code; // giữ nguyên format
+    pre.appendChild(code);
+
+    toolContainer.appendChild(makeCard(post.title, post.content, pre, post.code, post.filename));
   });
 
-  // Highlight all code blocks
   hljs.highlightAll();
+}
+
+// ================== HELPERS ==================
+function makeCard(title, content, preEl, codeStr, filename) {
+  const card = document.createElement("div");
+  card.className = "card";
+
+  const h2 = document.createElement("h2");
+  h2.textContent = title;
+  const p = document.createElement("p");
+  p.textContent = content;
+
+  card.appendChild(h2);
+  card.appendChild(p);
+  card.appendChild(preEl);
+
+  // copy button
+  const copyBtn = document.createElement("button");
+  copyBtn.className = "btn copy-btn";
+  copyBtn.textContent = "📋 Copy";
+  copyBtn.onclick = () => copyCode(codeStr);
+  card.appendChild(copyBtn);
+
+  // download button (nếu có filename)
+  if (filename) {
+    const dlBtn = document.createElement("button");
+    dlBtn.className = "btn download-btn";
+    dlBtn.textContent = "⬇ Download";
+    dlBtn.onclick = () => downloadCode(codeStr, filename);
+    card.appendChild(dlBtn);
+  }
+
+  return card;
 }
 
 // ================== FUNCTIONS ==================
@@ -108,5 +138,4 @@ function showTab(tabId) {
   document.querySelector(`.tab[onclick="showTab('${tabId}')"]`).classList.add("active");
 }
 
-// Run
 document.addEventListener("DOMContentLoaded", renderPosts);
