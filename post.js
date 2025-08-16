@@ -53,6 +53,7 @@ function renderPosts() {
   });
 
   // Tutorials
+  const newsContainer = document.getElementById("tutorials");
   posts.tutorials.forEach(post => {
     const pre = document.createElement("pre");
     const code = document.createElement("code");
@@ -64,6 +65,7 @@ function renderPosts() {
   });
   
   // Tools
+  const newsContainer = document.getElementById("tools");
   posts.tools.forEach(post => {
     const pre = document.createElement("pre");
     const code = document.createElement("code");
