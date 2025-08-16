@@ -1,15 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
   const posts = {
-    team: `
-      <div style="text-align: center; padding: 20px;">
-        <h2 style="color:#f44336;">Giới thiệu Hacker Malware Team</h2>
-        <p style="max-width: 900px; margin: 0 auto; line-height: 1.6; color: #e0e0e0;">
-          Hacker Malware Team là một nhóm hacker hoạt động độc lập, chuyên nghiên cứu và phát triển tool, exploit 
-          và các kỹ thuật hack. Nhóm được thành lập với mục tiêu chia sẻ kiến thức, công cụ và kinh nghiệm để 
-          hỗ trợ cộng đồng hacker Việt Nam.
-        </p>
-      </div>
-    `,
     news: `
       <div style="text-align: center; padding: 20px;">
         <h2 style="color:#f44336;">Tin tức mới nhất</h2>
@@ -56,10 +46,10 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("content").innerHTML = posts[tab];
   }
 
-  // hiển thị mặc định
-  showTab("team");
+  // Mặc định hiển thị News
+  showTab("news");
 
-  // gán sự kiện click vào các nút
+  // Sự kiện click
   document.querySelectorAll(".tab-btn").forEach(btn => {
     btn.addEventListener("click", function () {
       const tab = this.getAttribute("data-tab");
