@@ -24,13 +24,39 @@ const posts = {
   tools: [
     { 
       title: "🛠 Recon Tool", 
-      code: "python recon.py --target example.com", 
-      filename: "recon.py" 
+      displayCode: "python recon.py --target example.com",   // hiển thị trên web
+      downloadCode: `# recon.py
+import requests
+
+def scan(target):
+    print(f"Scanning target: {target}")
+    try:
+        r = requests.get(f"http://{target}")
+        print("Status:", r.status_code)
+    except:
+        print("Error connecting")
+
+if __name__ == "__main__":
+    scan("example.com")`,
+      filename: "recon.py"
     },
     { 
       title: "🐞 Exploit Framework", 
-      code: "python exploit.py --rhost 127.0.0.1 --rport 8080", 
-      filename: "exploit.py" 
+      displayCode: "python exploit.py --rhost 127.0.0.1 --rport 8080",  // hiển thị
+      downloadCode: `# exploit.py
+import socket
+
+def exploit(rhost, rport):
+    print(f"Exploiting {rhost}:{rport}")
+    s = socket.socket()
+    s.connect((rhost, int(rport)))
+    payload = b"A" * 1024
+    s.send(payload)
+    print("Payload sent!")
+
+if __name__ == "__main__":
+    exploit("127.0.0.1", 8080)`,
+      filename: "exploit.py"
     }
   ]
 };
@@ -52,9 +78,8 @@ function downloadCode(filename, code) {
 
 // ====== Render posts ======
 function renderPosts() {
-  // Render news
-  const newsContainer = document.getElementById("news");
-  newsContainer.innerHTML = posts.news.map(p => `
+  // News
+  document.getElementById("news").innerHTML = posts.news.map(p => `
     <div class="card">
       <h2>${p.title}</h2>
       <p>${p.content}</p>
@@ -62,26 +87,27 @@ function renderPosts() {
     </div>
   `).join("");
 
-  // Render tutorials
-  const tutorialContainer = document.getElementById("tutorials");
-  tutorialContainer.innerHTML = posts.tutorials.map(p => `
+  // Tutorials
+  document.getElementById("tutorials").innerHTML = posts.tutorials.map(p => `
     <div class="card">
       <h2>${p.title}</h2>
-      <pre><code>${p.code}</code></pre>
+      <pre><code class="language-bash">${p.code}</code></pre>
       <button onclick="copyCode(\`${p.code}\`)" class="tab-btn">Copy</button>
     </div>
   `).join("");
 
-  // Render tools
-  const toolContainer = document.getElementById("tools");
-  toolContainer.innerHTML = posts.tools.map(p => `
+  // Tools
+  document.getElementById("tools").innerHTML = posts.tools.map(p => `
     <div class="card">
       <h2>${p.title}</h2>
-      <pre><code>${p.code}</code></pre>
-      <button onclick="copyCode(\`${p.code}\`)" class="tab-btn">Copy</button>
-      <button onclick="downloadCode('${p.filename}', \`${p.code}\`)" class="tab-btn">Download</button>
+      <pre><code class="language-python">${p.displayCode}</code></pre>
+      <button onclick="copyCode(\`${p.displayCode}\`)" class="tab-btn">Copy</button>
+      <button onclick="downloadCode('${p.filename}', \`${p.downloadCode}\`)" class="tab-btn">Download</button>
     </div>
   `).join("");
+
+  // Kích hoạt highlight.js
+  document.querySelectorAll('pre code').forEach(el => hljs.highlightElement(el));
 }
 
 renderPosts();
